@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ach-1",
+    "title": "Certificate of Membership — TAAB",
+    "category": "Certificates",
+    "issuer": "Travel Agents Association of Bengal (TAAB ALLIED)",
+    "year": "2025-2026",
+    "image": "/certificates/cert_taab_membership.png",
+    "description": "Official Certificate of Membership presented to Desi Journey by the Travel Agents Association of Bengal for excellence in regional tourism."
+  },
+  {
+    "id": "ach-2",
+    "title": "Government Tour Operator Registration Certificate",
+    "category": "Certificates",
+    "issuer": "Chhattisgarh Tourism Board (Govt. of Chhattisgarh)",
+    "year": "2025-2028",
+    "image": "/certificates/cert_chhattisgarh_tourism.png",
+    "description": "Official Registration Certificate (No. CTB-E/IT/2025/T-0147) certifying Desi Journey as a registered Tour Operator & Travel Agent."
+  },
+  {
+    "id": "ach-3",
+    "title": "Certificate of Active Membership — ETAA",
+    "category": "Certificates",
+    "issuer": "Enterprising Travel Agents Association (ETAA)",
+    "year": "2025-2026",
+    "image": "/certificates/cert_etaa_membership.png",
+    "description": "Active National Membership Certificate (No. 1635) incorporated under Section 25 of the Companies Act, 1956."
+  },
+  {
+    "id": "ach-4",
+    "title": "Tourism & Travel Management Certificate",
+    "category": "Certificates",
+    "issuer": "Ramakrishna Mission Vidyamandira, Belur Math",
+    "year": "2025",
+    "image": "/certificates/cert_rkm_vidyamandira.jpg",
+    "description": "Certified completion of Tourism & Travel Management, Tour Operation, Guiding Skill & Personality Development for founder Soma Mukherjee."
+  },
+  {
+    "id": "ach-5",
+    "title": "Tourism Industry Leadership & Conclave",
+    "category": "Recognitions",
+    "issuer": "National Tourism Conclave",
+    "year": "2025",
+    "image": "/certificates/photo_soma_omar_abdullah.png",
+    "description": "Desi Journey founder Soma Mukherjee with former J&K Chief Minister Omar Abdullah at the Tourism Leadership Conclave."
+  }
+]

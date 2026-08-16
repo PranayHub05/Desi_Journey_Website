@@ -1,0 +1,2 @@
+import GalleryPreview from '../components/GalleryPreview'
+export default function GalleryPage() { return <><section className="bg-ink pt-36 text-center text-white"><div className="container-luxe pb-20"><p className="eyebrow justify-center !text-cyan">Visual diary</p><h1 className="display-font text-5xl sm:text-7xl">Places that made us pause.</h1><p className="mx-auto mt-5 max-w-xl leading-7 text-white/65">Browse small moments from the road. Click any photograph to see it closer.</p></div></section><GalleryPreview /></> }

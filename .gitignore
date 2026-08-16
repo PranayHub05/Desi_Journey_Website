@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+*/node_modules/
+.pnpm-store/
+
+# Production builds
+dist/
+client/dist/
+build/
+.vercel
+.firebase/
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+backend/.env
+client/.env
+!.env.example
+!backend/.env.example
+!client/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary files & Editor caches
+.DS_Store
+Thumbs.db
+outputs/
+work/
+scratch/
+.idea/
+.vscode/
+*.local
