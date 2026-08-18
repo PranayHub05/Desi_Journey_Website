@@ -10,6 +10,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Response interceptor to handle 401 cleanly
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.warn('Admin session expired or unauthorized (401)');
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Public Tours
 export const fetchTours = async () => {
   try {
@@ -94,7 +105,8 @@ export const fetchActivePopups = async () => {
 // Auth
 export const loginAdmin = async (password) => {
   try {
-    return (await api.post('/api/auth', { password })).data;
+    const res = await api.post('/api/auth', { password });
+    return res.data;
   } catch (err) {
     if (password === '1234') {
       return { token: 'mock-admin-token-1234' };

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { fetchPopups, createPopup, updatePopup, deletePopup } from '../services/api';
-import { HiPlus, HiPencil, HiTrash, HiCheck, HiX, HiOutlineSparkles, HiOutlineArrowLeft, HiOutlinePhotograph, HiOutlineUpload } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
+import { formatDriveLink } from '../utils/media';
+import { HiPlus, HiPencil, HiTrash, HiCheck, HiX, HiOutlineSparkles, HiOutlineArrowLeft, HiOutlinePhotograph, HiOutlineUpload, HiOutlineExclamationCircle, HiOutlineLogin } from 'react-icons/hi';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function AdminPopupEditor() {
   const navigate = useNavigate();
@@ -21,13 +22,19 @@ export default function AdminPopupEditor() {
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [isAuthError, setIsAuthError] = useState(false);
 
   const loadPopups = async () => {
     try {
       const data = await fetchPopups();
       setPopups(data);
     } catch (err) {
-      setError(err.message);
+      if (err.response?.status === 401) {
+        setIsAuthError(true);
+        setError('Your admin session has expired. Please log in again.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -41,7 +48,7 @@ export default function AdminPopupEditor() {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({ 
       ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
+      [name]: type === 'checkbox' ? checked : (name === 'image' ? formatDriveLink(value) : value) 
     }));
   };
 
@@ -81,18 +88,20 @@ export default function AdminPopupEditor() {
     setFormData({ id: null, title: '', message: '', image: '', ctaText: '', ctaLink: '', active: false });
     setIsEditing(false);
     setError('');
+    setIsAuthError(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError('');
+    setIsAuthError(false);
 
     try {
       const payload = {
         title: formData.title,
         message: formData.message,
-        image: formData.image,
+        image: formatDriveLink(formData.image),
         ctaText: formData.ctaText,
         ctaLink: formData.ctaLink,
         active: formData.active,
@@ -107,7 +116,12 @@ export default function AdminPopupEditor() {
       await loadPopups();
       handleCancel();
     } catch (err) {
-      setError(err.response?.data?.message || err.message);
+      if (err.response?.status === 401) {
+        setIsAuthError(true);
+        setError('Your admin session has expired or authentication failed. Please log in again to save changes.');
+      } else {
+        setError(err.response?.data?.message || err.message);
+      }
     } finally {
       setSaving(false);
     }
@@ -119,7 +133,12 @@ export default function AdminPopupEditor() {
         await deletePopup(id);
         await loadPopups();
       } catch (err) {
-        setError(err.response?.data?.message || err.message);
+        if (err.response?.status === 401) {
+          setIsAuthError(true);
+          setError('Session expired. Please log in again.');
+        } else {
+          setError(err.response?.data?.message || err.message);
+        }
       }
     }
   };
@@ -130,7 +149,12 @@ export default function AdminPopupEditor() {
       await updatePopup(popupId, { ...popup, active: !popup.active });
       await loadPopups();
     } catch (err) {
-      setError(err.message);
+      if (err.response?.status === 401) {
+        setIsAuthError(true);
+        setError('Session expired. Please log in again.');
+      } else {
+        setError(err.message);
+      }
     }
   };
 
@@ -161,8 +185,19 @@ export default function AdminPopupEditor() {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-xs font-medium">
-          {error}
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-xs font-medium flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <HiOutlineExclamationCircle size={18} className="text-red-500 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+          {isAuthError && (
+            <Link 
+              to="/admin/login" 
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-xs transition"
+            >
+              <HiOutlineLogin size={14} /> Log In Now
+            </Link>
+          )}
         </div>
       )}
 
@@ -207,10 +242,10 @@ export default function AdminPopupEditor() {
               />
             </div>
 
-            {/* Popup Banner Photo (<3MB Upload / URL) */}
+            {/* Popup Banner Photo (<3MB Upload / Google Drive URL) */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                Popup Banner Photo (&lt; 3MB)
+                Popup Banner Photo (&lt; 3MB or Drive Link)
               </label>
 
               <div className="space-y-3">
@@ -224,7 +259,7 @@ export default function AdminPopupEditor() {
                       className="hidden" 
                     />
                   </label>
-                  <span className="text-xs text-slate-400 font-medium">or paste image URL below</span>
+                  <span className="text-xs text-slate-400 font-medium">or paste image / Google Drive URL</span>
                 </div>
 
                 <input
@@ -232,7 +267,7 @@ export default function AdminPopupEditor() {
                   name="image"
                   value={formData.image}
                   onChange={handleChange}
-                  placeholder="https://images.unsplash.com/... or upload file above"
+                  placeholder="https://images.unsplash.com/... or Google Drive link"
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-xs text-slate-900 outline-none focus:border-cyan font-medium"
                 />
 

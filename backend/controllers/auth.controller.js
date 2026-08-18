@@ -6,9 +6,9 @@ export const login = (req, res) => {
 
   if (password === adminPassword) {
     const secret = process.env.JWT_SECRET || 'desi-journey-secret-key-change-me';
-    const token = jwt.sign({ admin: true }, secret, { expiresIn: '24h' });
-    res.json({ token });
+    const token = jwt.sign({ admin: true }, secret, { expiresIn: '30d' });
+    res.json({ token, success: true });
   } else {
-    res.status(401).json({ error: 'Invalid password' });
+    res.status(401).json({ error: 'Invalid password', message: 'Incorrect admin password.' });
   }
 };
