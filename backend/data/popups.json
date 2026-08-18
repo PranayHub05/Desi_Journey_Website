@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "title": "Amazing Arunachal",
+    "message": "booking open",
+    "image": "https://images.pexels.com/photos/11464751/pexels-photo-11464751.jpeg?_gl=1*1216osu*_ga*MTk0NzY4NDY1Ni4xNzIyOTY1NzA4*_ga_8JE65Q40S6*czE3ODcwNzcxNTgkbzczJGcxJHQxNzg3MDc3MjA3JGoxMSRsMCRoMA..",
+    "ctaText": "Book Now - 9330343977",
+    "ctaLink": "",
+    "active": true,
+    "id": "2d1a2596-c90f-43cd-ab00-49d2f1163029",
+    "createdAt": "2026-08-18T18:21:16.975Z"
+  }
+]

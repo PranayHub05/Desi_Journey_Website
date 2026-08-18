@@ -36,3 +36,5 @@ scratch/
 .idea/
 .vscode/
 *.local
+
+.vercel
