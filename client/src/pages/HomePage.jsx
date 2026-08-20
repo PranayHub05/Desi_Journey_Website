@@ -5,4 +5,22 @@ import AboutPreview from '../components/AboutPreview'
 import GalleryPreview from '../components/GalleryPreview'
 import BlogPreview from '../components/BlogPreview'
 import ContactPreview from '../components/ContactPreview'
-export default function HomePage() { return <><Hero /><FeaturedTrips /><Reviews /><AboutPreview /><GalleryPreview /><BlogPreview /><ContactPreview /></> }
+import { SEO, getTravelAgencySchema } from '../seo'
+
+export default function HomePage() {
+  return (
+    <>
+      <SEO 
+        canonical="/"
+        schema={getTravelAgencySchema()}
+      />
+      <Hero />
+      <FeaturedTrips />
+      <Reviews />
+      <AboutPreview />
+      <GalleryPreview />
+      <BlogPreview />
+      <ContactPreview />
+    </>
+  )
+}

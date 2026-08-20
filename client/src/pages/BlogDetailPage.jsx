@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { HiOutlineArrowNarrowLeft, HiOutlineTag, HiOutlineBookmark } from 'react-icons/hi';
 import { fetchPost } from '../services/api';
 import LoadingScreen from '../components/LoadingScreen';
+import { SEO, getArticleSchema, getBreadcrumbSchema } from '../seo';
 
 export default function BlogDetailPage() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ export default function BlogDetailPage() {
   if (error || !post) {
     return (
       <div className="min-h-screen bg-sand pt-36 pb-20 text-center container-luxe">
+        <SEO title="Article Not Found" noindex={true} />
         <h2 className="text-3xl font-display text-ink mb-4">Article Not Found</h2>
         <p className="text-ink/60 mb-8">The journal entry you are looking for might have been moved or update.</p>
         <Link to="/blog" className="gold-button">
@@ -31,8 +33,30 @@ export default function BlogDetailPage() {
     );
   }
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Journal', path: '/blog' },
+    { name: post.title, path: `/blog/${post.id}` }
+  ];
+
+  const schemas = [
+    getArticleSchema(post),
+    getBreadcrumbSchema(breadcrumbs)
+  ].filter(Boolean);
+
   return (
     <article className="min-h-screen bg-sand pt-28 pb-24">
+      {/* Dynamic SEO for Blog Article */}
+      <SEO 
+        title={post.title}
+        description={post.excerpt || post.title}
+        image={post.image}
+        canonical={`/blog/${post.id}`}
+        type="article"
+        keywords={post.keywords || [post.category, 'travel journal', 'desi journey']}
+        schema={schemas}
+      />
+
       <div className="max-w-4xl mx-auto px-4">
         {/* Back Link */}
         <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-ocean hover:text-ink transition mb-8">

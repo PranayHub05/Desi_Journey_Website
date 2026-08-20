@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineArrowNarrowLeft, HiOutlineSparkles, HiOutlineArrowDown, HiGlobeAlt, HiLocationMarker, HiUserGroup } from 'react-icons/hi';
 import FeaturedTrips from '../components/FeaturedTrips';
+import { SEO, getBreadcrumbSchema } from '../seo';
 
 export default function DestinationsPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -18,8 +19,21 @@ export default function DestinationsPage() {
     navigate('/contact', { state: { customTrip: true } });
   };
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Destinations & Trips', path: '/destinations' }
+  ];
+
   return (
     <>
+      <SEO 
+        title="Curated Tour Packages & Destinations"
+        description="Explore luxury domestic and international holiday tour packages with Desi Journey. Handcrafted itineraries for Andaman, Kashmir, Arunachal, Bali, Kerala and beyond."
+        canonical="/destinations"
+        keywords={['curated tour packages', 'domestic holiday packages india', 'international travel packages', 'andaman trips', 'kashmir tour packages']}
+        schema={getBreadcrumbSchema(breadcrumbs)}
+      />
+
       <section className="relative overflow-hidden bg-ink pt-32 pb-16 text-white">
         <div className="hero-mesh absolute inset-0 opacity-40" />
 
@@ -53,7 +67,7 @@ export default function DestinationsPage() {
               <div className="absolute inset-0 -z-10 opacity-30 group-hover:opacity-40 transition-opacity">
                 <img 
                   src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" 
-                  alt="Domestic" 
+                  alt="Domestic Escapes" 
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-transparent" />
@@ -90,7 +104,7 @@ export default function DestinationsPage() {
               <div className="absolute inset-0 -z-10 opacity-30 group-hover:opacity-40 transition-opacity">
                 <img 
                   src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80" 
-                  alt="International" 
+                  alt="International Escapes" 
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-transparent" />
@@ -123,7 +137,7 @@ export default function DestinationsPage() {
               <div className="absolute inset-0 -z-10 opacity-30 group-hover:opacity-40 transition-opacity">
                 <img 
                   src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80" 
-                  alt="Custom" 
+                  alt="Tailor-Made Custom Trips" 
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-transparent" />

@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import BrandLogo from '../components/BrandLogo';
+import { SEO } from '../seo';
 import { HiOutlineLockClosed, HiOutlineArrowRight } from 'react-icons/hi';
 
 export default function AdminLoginPage() {
@@ -28,6 +29,11 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-[#081325] flex items-center justify-center p-6 relative overflow-hidden">
+      <SEO 
+        title="Admin Sign In"
+        noindex={true}
+      />
+
       {/* Background glow accents */}
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-ocean/20 rounded-full blur-3xl pointer-events-none" />

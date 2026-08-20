@@ -4,6 +4,7 @@ import { HiOutlineBadgeCheck, HiX, HiOutlineEye, HiOutlineAcademicCap } from 're
 import { useAchievements } from '../hooks/useAchievements';
 import SectionHeading from '../components/SectionHeading';
 import LoadingScreen from '../components/LoadingScreen';
+import { SEO, getBreadcrumbSchema } from '../seo';
 
 export default function AchievementsPage() {
   const { achievements, loading, error } = useAchievements();
@@ -18,8 +19,21 @@ export default function AchievementsPage() {
     ? achievements 
     : achievements.filter(a => a.category === filter);
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Achievements & Certificates', path: '/achievements' }
+  ];
+
   return (
     <div id="achievements" className="min-h-screen bg-sand pt-32 pb-24">
+      <SEO 
+        title="Official Accreditations, Certificates & Awards"
+        description="Verify Desi Journey's official accreditations by TAAB, ETAA, and State Tourism Boards. Recognized excellence in luxury and bespoke holiday curation."
+        canonical="/achievements"
+        keywords={['travel agency accreditations', 'taab certified travel agent', 'etaa member kolkata', 'verified travel agency certificates']}
+        schema={getBreadcrumbSchema(breadcrumbs)}
+      />
+
       {/* Hero Header */}
       <section className="bg-ink py-16 text-center text-white mb-12 relative overflow-hidden">
         <div className="container-luxe relative z-10">

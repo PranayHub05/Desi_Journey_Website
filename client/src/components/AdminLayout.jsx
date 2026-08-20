@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import BrandLogo from './BrandLogo';
+import { SEO } from '../seo';
 import { 
   HiOutlineChartSquareBar, 
   HiOutlineMap, 
@@ -45,6 +46,11 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] flex flex-col lg:flex-row font-sans">
+      <SEO 
+        title={`Admin - ${getBreadcrumb()}`}
+        noindex={true}
+      />
+
       {/* Mobile Top Navigation */}
       <div className="lg:hidden flex items-center justify-between px-6 py-4 bg-[#081325] border-b border-white/10 sticky top-0 z-50">
         <BrandLogo light compact />

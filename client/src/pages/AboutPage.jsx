@@ -1,10 +1,24 @@
 import { Link } from 'react-router-dom';
 import { HiOutlineArrowNarrowRight, HiOutlineBadgeCheck } from 'react-icons/hi';
 import SectionHeading from '../components/SectionHeading';
+import { SEO, getBreadcrumbSchema } from '../seo';
 
 export default function AboutPage() { 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about' }
+  ];
+
   return (
     <>
+      <SEO 
+        title="About Us & Our Philosophy"
+        description="Learn about Desi Journey - bespoke travel curators offering accredited luxury and experiential journeys across India and global destinations."
+        canonical="/about"
+        keywords={['about desi journey', 'bespoke travel curators india', 'luxury travel company story']}
+        schema={getBreadcrumbSchema(breadcrumbs)}
+      />
+
       <section className="bg-ink pt-36 text-white">
         <div className="container-luxe grid gap-12 pb-24 lg:grid-cols-2 lg:items-center">
           <div>

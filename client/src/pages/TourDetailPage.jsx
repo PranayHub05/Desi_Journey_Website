@@ -16,6 +16,7 @@ import {
 } from 'react-icons/hi';
 import { fetchTour } from '../services/api';
 import LoadingScreen from '../components/LoadingScreen';
+import { SEO, getTouristTripSchema, getBreadcrumbSchema } from '../seo';
 
 export default function TourDetailPage() {
   const { id } = useParams();
@@ -41,6 +42,10 @@ export default function TourDetailPage() {
   if (error || !tour) {
     return (
       <div className="min-h-screen bg-sand pt-36 pb-20 text-center container-luxe">
+        <SEO 
+          title="Tour Not Found"
+          noindex={true}
+        />
         <h2 className="text-3xl font-display text-ink mb-4">Tour Not Found</h2>
         <p className="text-ink/60 mb-8">The trip you are looking for might have been removed or updated.</p>
         <Link to="/destinations" className="gold-button">
@@ -57,8 +62,29 @@ export default function TourDetailPage() {
     setOpenDay(openDay === dayNum ? null : dayNum);
   };
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Destinations', path: '/destinations' },
+    { name: tour.title, path: `/tours/${tour.id}` }
+  ];
+
+  const schemas = [
+    getTouristTripSchema(tour),
+    getBreadcrumbSchema(breadcrumbs)
+  ].filter(Boolean);
+
   return (
     <div className="min-h-screen bg-sand pt-28 pb-24">
+      {/* Dynamic SEO for Tour Detail Page */}
+      <SEO 
+        title={`${tour.title} Tour Package (${tour.duration})`}
+        description={tour.description || `Book the ${tour.title} holiday package in ${tour.location} starting at ${tour.price}. Tailored luxury stays, private transfers, and concierge by Desi Journey.`}
+        image={tour.image}
+        canonical={`/tours/${tour.id}`}
+        keywords={tour.keywords || [tour.title, tour.location, 'luxury tour package']}
+        schema={schemas}
+      />
+
       <div className="container-luxe space-y-12">
         {/* Back Link */}
         <Link to="/destinations" className="inline-flex items-center gap-2 text-sm font-bold text-ocean hover:text-ink transition">
