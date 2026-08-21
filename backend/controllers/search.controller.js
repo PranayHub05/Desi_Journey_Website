@@ -1,11 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const toursFile = path.join(__dirname, '../data/tours.json');
-const postsFile = path.join(__dirname, '../data/posts.json');
+import { readCollection } from '../services/storage.service.js';
 
 export const search = (req, res) => {
   try {
@@ -19,8 +12,8 @@ export const search = (req, res) => {
       return res.json({ tours: [], posts: [] });
     }
 
-    const tours = JSON.parse(fs.readFileSync(toursFile, 'utf8'));
-    const posts = JSON.parse(fs.readFileSync(postsFile, 'utf8'));
+    const tours = readCollection('tours');
+    const posts = readCollection('posts');
 
     const scoreItem = (item, type) => {
       let score = 0;

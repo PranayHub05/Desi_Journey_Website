@@ -1,61 +1,57 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import crypto from 'crypto';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dataFile = path.join(__dirname, '../data/tours.json');
-
-const readData = () => {
-  try {
-    return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
-  } catch (error) {
-    return [];
-  }
-};
-
-const writeData = (data) => {
-  fs.writeFileSync(dataFile, JSON.stringify(data, null, 2), 'utf8');
-};
+import { readCollection, writeCollection } from '../services/storage.service.js';
 
 export const listTours = (req, res) => {
-  res.json(readData());
+  res.json(readCollection('tours'));
 };
 
 export const getTour = (req, res) => {
-  const tours = readData();
+  const tours = readCollection('tours');
   const tour = tours.find(t => t.id === req.params.id);
   if (tour) {
     res.json(tour);
   } else {
-    res.status(404).json({ error: 'Not found' });
+    res.status(404).json({ error: 'Tour not found' });
   }
 };
 
 export const createTour = (req, res) => {
-  const tours = readData();
-  const newTour = { ...req.body, id: crypto.randomUUID() };
+  const tours = readCollection('tours');
+  const newTour = { 
+    ...req.body, 
+    id: req.body.id || `tour-${crypto.randomUUID().slice(0, 8)}`,
+    createdAt: new Date().toISOString()
+  };
   tours.push(newTour);
-  writeData(tours);
+  writeCollection('tours', tours);
   res.status(201).json(newTour);
 };
 
 export const updateTour = (req, res) => {
-  const tours = readData();
+  const tours = readCollection('tours');
   const index = tours.findIndex(t => t.id === req.params.id);
   if (index !== -1) {
-    tours[index] = { ...tours[index], ...req.body, id: tours[index].id };
-    writeData(tours);
+    tours[index] = { 
+      ...tours[index], 
+      ...req.body, 
+      id: tours[index].id,
+      updatedAt: new Date().toISOString()
+    };
+    writeCollection('tours', tours);
     res.json(tours[index]);
   } else {
-    res.status(404).json({ error: 'Not found' });
+    res.status(404).json({ error: 'Tour not found' });
   }
 };
 
 export const deleteTour = (req, res) => {
-  let tours = readData();
+  let tours = readCollection('tours');
+  const initialLength = tours.length;
   tours = tours.filter(t => t.id !== req.params.id);
-  writeData(tours);
-  res.status(204).end();
+  if (tours.length !== initialLength) {
+    writeCollection('tours', tours);
+    res.status(204).end();
+  } else {
+    res.status(404).json({ error: 'Tour not found' });
+  }
 };
