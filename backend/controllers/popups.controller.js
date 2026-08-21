@@ -1,52 +1,66 @@
 import crypto from 'crypto';
-import { readCollection, writeCollection } from '../services/storage.service.js';
+import { readCollection, saveDocument, deleteDocument } from '../services/storage.service.js';
 
-export const listPopups = (req, res) => {
-  res.json(readCollection('popups'));
-};
-
-export const getActivePopups = (req, res) => {
-  const popups = readCollection('popups');
-  res.json(popups.filter(p => p.active));
-};
-
-export const createPopup = (req, res) => {
-  const popups = readCollection('popups');
-  const newPopup = { 
-    ...req.body, 
-    id: req.body.id || `popup-${crypto.randomUUID().slice(0, 8)}`,
-    createdAt: new Date().toISOString()
-  };
-  popups.push(newPopup);
-  writeCollection('popups', popups);
-  res.status(201).json(newPopup);
-};
-
-export const updatePopup = (req, res) => {
-  const popups = readCollection('popups');
-  const index = popups.findIndex(p => p.id === req.params.id);
-  if (index !== -1) {
-    popups[index] = { 
-      ...popups[index], 
-      ...req.body, 
-      id: popups[index].id,
-      updatedAt: new Date().toISOString()
-    };
-    writeCollection('popups', popups);
-    res.json(popups[index]);
-  } else {
-    res.status(404).json({ error: 'Popup not found' });
+export const listPopups = async (req, res) => {
+  try {
+    const popups = await readCollection('popups');
+    res.json(popups);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-export const deletePopup = (req, res) => {
-  let popups = readCollection('popups');
-  const initialLength = popups.length;
-  popups = popups.filter(p => p.id !== req.params.id);
-  if (popups.length !== initialLength) {
-    writeCollection('popups', popups);
+export const getActivePopups = async (req, res) => {
+  try {
+    const popups = await readCollection('popups');
+    res.json(popups.filter(p => p.active));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const createPopup = async (req, res) => {
+  try {
+    const id = req.body.id || `popup-${crypto.randomUUID().slice(0, 8)}`;
+    const newPopup = { 
+      ...req.body, 
+      id,
+      createdAt: new Date().toISOString()
+    };
+    await saveDocument('popups', id, newPopup);
+    res.status(201).json(newPopup);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updatePopup = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const popups = await readCollection('popups');
+    const existing = popups.find(p => p.id === id);
+    if (!existing) {
+      return res.status(404).json({ error: 'Popup not found' });
+    }
+    const updatedPopup = {
+      ...existing,
+      ...req.body,
+      id,
+      updatedAt: new Date().toISOString()
+    };
+    await saveDocument('popups', id, updatedPopup);
+    res.json(updatedPopup);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const deletePopup = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await deleteDocument('popups', id);
     res.status(204).end();
-  } else {
-    res.status(404).json({ error: 'Popup not found' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

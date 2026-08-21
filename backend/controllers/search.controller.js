@@ -1,6 +1,6 @@
 import { readCollection } from '../services/storage.service.js';
 
-export const search = (req, res) => {
+export const search = async (req, res) => {
   try {
     const { query } = req.body;
     if (!query || typeof query !== 'string') {
@@ -12,8 +12,8 @@ export const search = (req, res) => {
       return res.json({ tours: [], posts: [] });
     }
 
-    const tours = readCollection('tours');
-    const posts = readCollection('posts');
+    const tours = await readCollection('tours');
+    const posts = await readCollection('posts');
 
     const scoreItem = (item, type) => {
       let score = 0;

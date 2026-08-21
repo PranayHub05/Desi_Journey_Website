@@ -1,57 +1,71 @@
 import crypto from 'crypto';
-import { readCollection, writeCollection } from '../services/storage.service.js';
+import { readCollection, saveDocument, deleteDocument } from '../services/storage.service.js';
 
-export const listPosts = (req, res) => {
-  res.json(readCollection('posts'));
-};
-
-export const getPost = (req, res) => {
-  const posts = readCollection('posts');
-  const post = posts.find(p => p.id === req.params.id);
-  if (post) {
-    res.json(post);
-  } else {
-    res.status(404).json({ error: 'Post not found' });
+export const listPosts = async (req, res) => {
+  try {
+    const posts = await readCollection('posts');
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-export const createPost = (req, res) => {
-  const posts = readCollection('posts');
-  const newPost = { 
-    ...req.body, 
-    id: req.body.id || `post-${crypto.randomUUID().slice(0, 8)}`,
-    createdAt: new Date().toISOString()
-  };
-  posts.push(newPost);
-  writeCollection('posts', posts);
-  res.status(201).json(newPost);
+export const getPost = async (req, res) => {
+  try {
+    const posts = await readCollection('posts');
+    const post = posts.find(p => p.id === req.params.id);
+    if (post) {
+      res.json(post);
+    } else {
+      res.status(404).json({ error: 'Post not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-export const updatePost = (req, res) => {
-  const posts = readCollection('posts');
-  const index = posts.findIndex(p => p.id === req.params.id);
-  if (index !== -1) {
-    posts[index] = { 
-      ...posts[index], 
+export const createPost = async (req, res) => {
+  try {
+    const id = req.body.id || `post-${crypto.randomUUID().slice(0, 8)}`;
+    const newPost = { 
       ...req.body, 
-      id: posts[index].id,
+      id,
+      createdAt: new Date().toISOString()
+    };
+    await saveDocument('posts', id, newPost);
+    res.status(201).json(newPost);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updatePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const posts = await readCollection('posts');
+    const existing = posts.find(p => p.id === id);
+    if (!existing) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    const updatedPost = {
+      ...existing,
+      ...req.body,
+      id,
       updatedAt: new Date().toISOString()
     };
-    writeCollection('posts', posts);
-    res.json(posts[index]);
-  } else {
-    res.status(404).json({ error: 'Post not found' });
+    await saveDocument('posts', id, updatedPost);
+    res.json(updatedPost);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-export const deletePost = (req, res) => {
-  let posts = readCollection('posts');
-  const initialLength = posts.length;
-  posts = posts.filter(p => p.id !== req.params.id);
-  if (posts.length !== initialLength) {
-    writeCollection('posts', posts);
+export const deletePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await deleteDocument('posts', id);
     res.status(204).end();
-  } else {
-    res.status(404).json({ error: 'Post not found' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
